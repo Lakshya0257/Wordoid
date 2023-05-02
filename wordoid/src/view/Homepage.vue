@@ -1,4 +1,5 @@
 <template>
+  <Loading :loading="isLoading"></Loading>
   <div class="homepage">
     <h1>Explore</h1>
     <div class="divider"></div>
@@ -26,22 +27,28 @@
 import PublicBlog from "../components/PublicBlog.vue";
 import axios from "axios";
 import store from "../../store/store";
+import Loading from "../utils/Loading.vue";
 export default {
   data() {
     return {
       allBlogs: [],
+      isLoading:false
     };
   },
   components: {
     PublicBlog,
-  },
+    Loading
+},
   created() {
+    this.isLoading=true;
     axios
       .get("http://localhost:3000/blog")
       .then((response) => {
         this.allBlogs = response.data.data.allBlogs;
+        this.isLoading=false;
       })
       .catch((error) => {
+        this.isLoading=false;
         console.log(error);
       });
   },

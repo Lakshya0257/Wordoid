@@ -1,4 +1,5 @@
 <template>
+    <Loading :loading="isLoading"></Loading>
 <div class="blogs">
     <h1>My<br>Blogs</h1>
     <div class="divider"></div>
@@ -30,18 +31,22 @@
 import MyBlog from '../components/MyBlog.vue'
 import axios from 'axios'
 import store from '../../store/store'
+import Loading from '../utils/Loading.vue'
 export default{
     
     data(){
         return{
-            blogs:[]
+            blogs:[],
+            isLoading:false
         }
         
     },
     components:{
-        MyBlog
-    },
+    MyBlog,
+    Loading
+},
     created(){
+        this.isLoading=true;
         const data={
             username:localStorage.getItem('username')
         };
@@ -51,8 +56,10 @@ export default{
     }).then(response=>{
         console.log(response.data.data.data);
         this.blogs=response.data.data.data;
+        this.isLoading=false;
         }).catch(error=>{
             console.log(error);
+            this.isLoading=false;
         })
     },
     methods:{
