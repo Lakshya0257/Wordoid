@@ -5,16 +5,15 @@
         <p>Home</p>
       </button>
     </RouterLink>
-    <RouterLink to="/profile">
-      <button>
+    
+      <button @click="profile">
         <p>Profile</p>
       </button>
-    </RouterLink>
-    <RouterLink to="/new">
-      <button>
+    
+    
+      <button @click="newBlog">
         <p>Add New</p>
       </button>
-    </RouterLink>
     <button @click="login">
       <p>Login</p>
     </button>
@@ -51,6 +50,25 @@ export default {
     onDialogCancel() {
       this.isDialogVisible = false;
     },
+    profile(){
+      if (localStorage.getItem("username") === null) {
+        this.isDialogVisible = true;
+      }else{
+        this.$router.push({
+          name:'profile'
+        })
+      }
+    },
+    newBlog(){
+      if (localStorage.getItem("username") === null) {
+        this.isDialogVisible = true;
+      }else{
+        this.$router.push({
+          name:'new'
+        })
+      }
+    },
+
   },
 };
 </script>

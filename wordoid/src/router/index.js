@@ -22,11 +22,7 @@ const router = createRouter({
       path: '/blog/:id',
       name: 'blog',
       component: BlogDetail,
-      props: {
-        img: String,
-        blogTitle: String,
-        des: String,
-      }
+      props: true
     },
     {
       path: '/new',

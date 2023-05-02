@@ -6,7 +6,7 @@
             </div>
             <p class="heading">Comments</p>
             <div class="comment-section">
-                <UserComment v-for="comment in comments"></UserComment>
+                <UserComment v-for="comment in comments" :username="comment['username']" :comment="comment['comment']"></UserComment>
             </div>
             <div class="add-comment">
                 <input type="text" placeholder="Send new comment" ref="userComment">
@@ -19,11 +19,17 @@
             <p>{{ des }}</p>
         </div>
     </div>
+    <UsernameDialog
+      v-if="isDialogVisible"
+      @submit="onDialogSubmit"
+      @cancel="onDialogCancel"
+    ></UsernameDialog>
 </template>
 
 <script>
 import  UserComment  from '../components/UserComment.vue';
 import axios from 'axios';
+import UsernameDialog from '../components/UsernameDialog.vue';
 export default{
     props: ['img', 'blogTitle', 'des'],
     data(){
@@ -32,11 +38,13 @@ export default{
             id:'',
             img:'',
             blogTitle:'',
-            des:''
+            des:'',
+            isDialogVisible:false
         }
     },
     components:{
-        UserComment
+        UserComment,
+        UsernameDialog
     },
     created(){
         this.img= this.$store.getters.getData.img;
@@ -56,20 +64,37 @@ export default{
     },
     methods:{
         postComment(){
-            const data={
+            if(localStorage.getItem('username')===null){
+                this.isDialogVisible=true;
+            }else{
+                const data={
                 username:localStorage.getItem('username'),
                 comment: this.$refs.userComment.value
             }
+            this.comments.push(data)
             axios.post(`http://localhost:3000/blog/${this.id}`,data).then(response=>{
                 this.$refs.userComment.value='';
                 this.refreshComments;
         }).catch(error=>{
             console.log(error);
         })
+            }
+            
         },
 
+        onDialogSubmit(value) {
+      alert("Username: " + value);
+      localStorage.setItem("username", value);
+      this.isDialogVisible = false;
+    },
+    onDialogCancel() {
+      this.isDialogVisible = false;
+    },
+
         refreshComments(){
+            console.log('refreshing')
             axios.get(`http://localhost:3000/blog/${this.id}`).then(response=>{
+                console.log(response.data);
             this.comments=response.data.data.comment;
         }).catch(error=>{
             console.log(error);

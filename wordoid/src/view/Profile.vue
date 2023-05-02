@@ -5,7 +5,14 @@
     <div class="my-blogs">
         <div class="transparent"></div>
         <div class="blog-row">
-            <MyBlog  v-for="blog in blogs" :title="blog['title']" :description="blog['description']" :image="blog['image']"></MyBlog>
+            <MyBlog  v-for="blog in blogs" :title="blog['title']" :description="blog['description']" :image="blog['image']" @click="
+          blogDetail(
+            blog['image'],
+            blog['title'],
+            blog['description'],
+            blog['_id']
+          )
+        "></MyBlog>
         </div>
         <RouterLink to="/new">
             <div class="add-new">
@@ -22,6 +29,7 @@
 <script>
 import MyBlog from '../components/MyBlog.vue'
 import axios from 'axios'
+import store from '../../store/store'
 export default{
     
     data(){
@@ -46,6 +54,22 @@ export default{
         }).catch(error=>{
             console.log(error);
         })
+    },
+    methods:{
+        blogDetail(image, title, description, id) {
+      const jsonMap = {
+        img: image,
+        blogTitle: title,
+        des: description,
+      }
+      store.dispatch('setData', jsonMap);
+      this.$router.push({
+        name: "blog",
+        params: {
+          id: id,
+        },
+      });
+    },
     }
 
 }
